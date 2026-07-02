@@ -9,6 +9,9 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Formda">
 <style>
 :root{
   --bg:#0C1116; --sur:#141C24; --sur2:#1B2531; --line:#26333F;
@@ -17,6 +20,13 @@
   --teal:#4FD1B5; --teal-soft:rgba(79,209,181,.13);
   --ok:#5FCE8F; --warn:#F0A44A; --bad:#F0716B;
   --r:16px; --nav-h:64px;
+}
+:root[data-theme="light"]{
+  --bg:#F4F6F8; --sur:#FFFFFF; --sur2:#EEF1F4; --line:#DCE2E8;
+  --ink:#141C24; --dim:#5C6B78; --faint:#8C9AA6;
+  --amber:#C97A1E; --amber-soft:rgba(201,122,30,.12);
+  --teal:#0E8F79; --teal-soft:rgba(14,143,121,.11);
+  --ok:#2F9A5D; --warn:#C97A1E; --bad:#D1453A;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
@@ -92,16 +102,20 @@ button{font-family:inherit;cursor:pointer;border:none;border-radius:12px;font-si
 .seg.tiny button{min-height:32px;font-size:12px}
 /* workout session */
 .exc{background:var(--sur);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-top:12px}
+.ssgrp{border-left:3px solid var(--teal);border-radius:4px;margin-top:12px;padding-left:8px}
+.ssgrp .exc{margin-top:8px}
+.ssgrp .exc:first-of-type{margin-top:4px}
+.ssgrp-lab{font-size:11px;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;font-weight:600;padding:2px 0 0 2px}
 .exc .exh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 .exc .exh b{font-size:15.5px;font-weight:600}
 .exc .exh .mg{font-size:11px;color:var(--faint);letter-spacing:.08em;text-transform:uppercase}
 .exc .presc{font-size:12.5px;color:var(--amber);margin-top:3px}
 .exc .presc.dim{color:var(--faint)}
-.setrow{display:grid;grid-template-columns:30px 1fr 1fr 34px;gap:8px;align-items:center;margin-top:8px}
+.setrow{display:grid;grid-template-columns:26px 1fr 1fr 1fr 34px;gap:6px;align-items:center;margin-top:8px}
 .setrow .sn{font-size:12px;color:var(--faint);text-align:center}
-.setrow input{padding:10px 10px;min-height:44px;font-size:16px;text-align:center}
+.setrow input{padding:10px 4px;min-height:44px;font-size:15px;text-align:center}
 .setrow .del{background:transparent;border:none;color:var(--faint);font-size:17px;min-height:40px}
-.sethead{display:grid;grid-template-columns:30px 1fr 1fr 34px;gap:8px;margin-top:10px}
+.sethead{display:grid;grid-template-columns:26px 1fr 1fr 1fr 34px;gap:6px;margin-top:10px}
 .sethead span{font-size:10.5px;color:var(--faint);text-align:center;letter-spacing:.06em;text-transform:uppercase}
 .fbrow{margin-top:10px}
 /* timer */
@@ -243,6 +257,7 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
 <!-- ================= ÖZET ================= -->
 <section class="panel" id="p-ozet">
   <div id="installTip"></div>
+  <div id="remindBanner"></div>
   <div class="kpis" id="kpiGrid"></div>
   <div id="guardBox"></div>
   <div class="card" id="revCard" hidden></div>
@@ -286,6 +301,15 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
 
 <!-- ================= AYARLAR ================= -->
 <section class="panel" id="p-ayarlar">
+  <div class="card">
+    <h2>Görünüm</h2>
+    <div class="seg" id="segTheme">
+      <button data-th="dark">Koyu</button>
+      <button data-th="light">Açık</button>
+      <button data-th="system">Sistem</button>
+    </div>
+  </div>
+
   <div class="card">
     <h2>Profil</h2>
     <div class="row2">
@@ -337,6 +361,13 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
   </div>
 
   <div class="card">
+    <h2>Hatırlatıcı</h2>
+    <p class="tiny mut" id="remindStatus" style="margin-bottom:4px"></p>
+    <button class="btn-s" id="btnRemind"></button>
+    <p class="hint">Yalnızca uygulamayı açtığında kontrol edilir — son antrenmandan 2+ gün geçtiyse hatırlatılırsın. Gerçek arka plan bildirimi (uygulama kapalıyken) sunucu gerektirir ve bu tamamen cihazda çalışan uygulamada yok; bu yüzden düzenli açman en güvenilir yöntem.</p>
+  </div>
+
+  <div class="card">
     <h2>Veri</h2>
     <button class="btn-s" id="btnJson">Yedeği indir (JSON)</button>
     <button class="btn-s" id="btnImport">Yedekten geri yükle</button>
@@ -344,7 +375,7 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
     <button class="btn-s" id="btnCsv">Kalori verisini CSV indir</button>
     <button class="btn-s" id="btnCsvT">Antrenman verisini CSV indir</button>
     <button class="btn-danger" id="btnWipe">Tüm verileri sil</button>
-    <p class="hint">Veriler yalnızca bu cihazın tarayıcı depolamasında tutulur; hiçbir sunucuya gönderilmez. Haftada bir JSON yedeği almanı öneririm. Eski Kalori Defisit (v1) yedeklerini de içe aktarabilirsin.</p>
+    <p class="hint" id="storageHint">Veriler yalnızca bu cihazın tarayıcı depolamasında tutulur; hiçbir sunucuya gönderilmez. Haftada bir JSON yedeği almanı öneririm. Eski Kalori Defisit (v1) yedeklerini de içe aktarabilirsin.</p>
   </div>
 
   <div class="card">
@@ -374,7 +405,7 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
 <script>
 "use strict";
 /* ============ sabitler & yardımcılar ============ */
-const VER="2.0";
+const VER="2.1";
 const KEY="kd_v2";
 const KCAL=7700;
 const $=s=>document.querySelector(s);
@@ -397,6 +428,24 @@ function rStep(x,s){s=s||1.25;return Math.round(x/s)*s;}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
 let toastT;
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),2400);}
+
+/* ============ tema ============ */
+const THK="kd_theme";
+function applyTheme(pref){
+  const dark=matchMedia("(prefers-color-scheme: dark)");
+  const eff=pref==="system"?(dark.matches?"dark":"light"):pref;
+  document.documentElement.setAttribute("data-theme",eff);
+  const meta=document.querySelector('meta[name="theme-color"]');
+  if(meta)meta.setAttribute("content",eff==="light"?"#F4F6F8":"#0C1116");
+  document.querySelectorAll("#segTheme button").forEach(b=>b.classList.toggle("on",b.dataset.th===pref));
+}
+function themePref(){return localStorage.getItem(THK)||"dark";}
+applyTheme(themePref());
+document.getElementById("segTheme").addEventListener("click",e=>{
+  const b=e.target.closest("[data-th]");if(!b)return;
+  localStorage.setItem(THK,b.dataset.th);applyTheme(b.dataset.th);
+});
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{if(themePref()==="system")applyTheme("system");});
 
 /* ============ egzersiz kütüphanesi ============ */
 const MGS=["Göğüs","Sırt","Omuz","Biceps","Triceps","Quad","Hamstring","Kalça","Baldır","Karın"];
@@ -677,9 +726,15 @@ function setAdj(m,d,u,uptoW){
   for(let w=2;w<=uptoW;w++){
     const L=m.log[(w-1)+"-"+d];
     const fb=L&&L.fb?L.fb[u]:null;
-    if(fb==="e")adj++;else if(fb==="z")adj--;
+    if(fb==="e")adj++;else if(fb==="z"||fb==="a")adj--;
   }
   return Math.max(-1,Math.min(3,adj));
+}
+function warmup(weight,inc){
+  if(weight==null||weight<10)return null;
+  const s=(inc||2.5)/2;
+  const steps=[[0.5,8],[0.75,4]].map(([f,r])=>({w:Math.max(0,rStep(weight*f,s)),r})).filter(x=>x.w>0&&x.w<weight);
+  return steps.length?steps:null;
 }
 function lastPerf(m,d,u,beforeW){
   for(let w=beforeW-1;w>=1;w--){
@@ -706,9 +761,13 @@ function presc(m,w,d,e){
       weight=lw;reps=e.lo;note="Kiloyu koru, tekrarları aralığa taşı";
       if(lp.fb==="z"){weight=Math.max(0,rStep(lw-e.inc,(e.inc||2.5)/2));note="Geçen hafta zordu → hafif düşüş";}
     }
+    if(lp.fb==="a"){
+      weight=weight!=null?Math.max(0,rStep(weight-e.inc*2,(e.inc||2.5)/2)):weight;
+      note="Ağrı bildirilmişti — kilo belirgin düşürüldü. Devam ederse hareketi değiştirmeyi düşün.";
+    }
   }
   if(dl){if(weight!=null)weight=rStep(weight*0.9,(e.inc||2.5)/2);reps=e.lo;note="Deload — hafif ve temiz çalış";}
-  return{weight,reps,setCount,rir:RIR(m,w),note};
+  return{weight,reps,setCount,rir:RIR(m,w),note,warn:lp&&lp.fb==="a"};
 }
 function curPos(m){
   for(let w=1;w<=totW(m);w++)for(let d=0;d<m.days.length;d++){
@@ -721,8 +780,9 @@ function e1rm(w,r){return w*(1+r/30);}
 
 /* ============ seans görünümü ============ */
 let openSess=null;         // {w,d} | null -> sıradaki
-let draftSets={};          // geçici: key -> u -> [{w,r}]
+let draftSets={};          // geçici: key -> u -> [{w,r,rir}]
 let builderOpen=false, B=null;
+let swapOpenU=null;        // hareket değiştirme kutusu açık olan egzersiz u'su
 function sessKey(p){return p.w+"-"+p.d;}
 function harvestSess(){
   const m=AM();if(!m)return;
@@ -731,9 +791,58 @@ function harvestSess(){
   document.querySelectorAll("#sessArea .setrow").forEach(row=>{
     const u=row.dataset.u,i=+row.dataset.i;
     out[u]=out[u]||[];
-    out[u][i]={w:pnum(row.querySelector("[data-f=w]").value),r:pnum(row.querySelector("[data-f=r]").value)};
+    out[u][i]={w:pnum(row.querySelector("[data-f=w]").value),r:pnum(row.querySelector("[data-f=r]").value),rir:pnum(row.querySelector("[data-f=rir]").value)};
   });
   draftSets[k]=out;
+}
+function swapBoxHtml(e,x){
+  const opts=S.train.exlib.filter(o=>o.m===x.m&&o.id!==e.ex).map(o=>`<option value="${o.id}">${esc(o.n)}</option>`).join("");
+  if(!opts)return `<p class="hint">${esc(x.m)} grubunda başka egzersiz yok — kütüphaneye eklemek için mezosiklüsü düzenlemeye git.</p>`;
+  return `<div class="bex" style="margin-top:8px">
+    <label class="f" style="margin-top:0"><span>Yeni egzersiz (${esc(x.m)})</span>
+      <select id="swapSel">${opts}</select></label>
+    <div class="row2" style="margin-top:8px">
+      <button class="btn-s" id="swapOk" style="margin-top:0">Değiştir</button>
+      <button class="btn-s" id="swapCancel" style="margin-top:0">Vazgeç</button>
+    </div>
+    <p class="hint">Geçmiş kayıtların eski hareket altında kalır; bundan sonraki seanslarda yeni hareket kullanılır.</p>
+  </div>`;
+}
+function exCardHtml(m,p,e,L,k){
+  const x=exById(e.ex),pr=presc(m,p.w,p.d,e);
+  const logged=(L.sets&&L.sets[e.u])||null;
+  const draft=(draftSets[k]&&draftSets[k][e.u])||null;
+  const rows=draft||logged||Array.from({length:pr.setCount},()=>({w:pr.weight,r:null,rir:null}));
+  const fb=(L.fb&&L.fb[e.u])||null;
+  const wu=warmup(pr.weight,e.inc);
+  const lp=lastPerf(m,p.d,e.u,p.w);
+  const rirs=lp?lp.sets.filter(s=>s.rir!=null).map(s=>s.rir):[];
+  const avgRir=rirs.length?(rirs.reduce((a,b)=>a+b,0)/rirs.length):null;
+  return `<div class="exc" data-exu="${e.u}">
+    <div class="exh"><b>${esc(x.n)}</b><span class="mg">${esc(x.m)}</span></div>
+    <div class="presc">Hedef: ${pr.weight!=null?fW(pr.weight)+" kg":"— kg"} × ${pr.reps}+ tekrar · ${pr.setCount} set · RIR ${pr.rir}${avgRir!=null?` <span class="mut">· son gerçek RIR ort. ${fP(avgRir,1)}</span>`:""}</div>
+    ${pr.note?`<div class="presc dim"${pr.warn?' style="color:var(--bad)"':""}>${pr.note}</div>`:""}
+    ${wu?`<div class="presc dim">Isınma: ${wu.map(x2=>fW(x2.w)+"×"+x2.r).join(" → ")}</div>`:""}
+    <div class="sethead"><span>Set</span><span>kg</span><span>tekrar</span><span>RIR</span><span></span></div>
+    ${rows.map((r,i)=>`<div class="setrow" data-u="${e.u}" data-i="${i}">
+      <span class="sn">${i+1}</span>
+      <input type="number" inputmode="decimal" step="0.25" data-f="w" value="${r.w!=null?r.w:""}" placeholder="${pr.weight!=null?fW(pr.weight):"kg"}">
+      <input type="number" inputmode="numeric" data-f="r" value="${r.r!=null?r.r:""}" placeholder="${pr.reps}">
+      <input type="number" inputmode="numeric" data-f="rir" value="${r.rir!=null?r.rir:""}" placeholder="${pr.rir}">
+      <button class="del" data-delset="${i}" aria-label="Seti sil">✕</button>
+    </div>`).join("")}
+    <div class="spread" style="margin-top:10px">
+      <button class="btn-mini" data-addset="1">+ Set ekle</button>
+      <div class="seg tiny" style="margin:0;flex:1;max-width:290px">
+        <button data-fbv="e" class="${fb==="e"?"on":""}">Kolay</button>
+        <button data-fbv="t" class="${fb==="t"?"on":""}">Yerinde</button>
+        <button data-fbv="z" class="${fb==="z"?"on":""}">Zor</button>
+        <button data-fbv="a" class="${fb==="a"?"on":""}" style="color:var(--bad)">Ağrı</button>
+      </div>
+    </div>
+    <button class="btn-mini" data-swap="1" style="margin-top:8px">↺ Hareketi değiştir</button>
+    ${swapOpenU===e.u?swapBoxHtml(e,x):""}
+  </div>`;
 }
 function renderSession(){
   const m=AM(),area=$("#sessArea");
@@ -759,35 +868,21 @@ function renderSession(){
     ${L.done?`<span class="chip ok" style="margin-left:6px">✓ ${fD(L.date)}</span>`:""}</p>
     ${dl?`<p class="hint">Deload haftası: setler yarıya, kilolar ~%90 — toparlan, sonraki döngüye taze gir.</p>`:""}
   </div>`;
+  const groups=[];
   for(const e of day.ex){
-    const x=exById(e.ex),pr=presc(m,p.w,p.d,e);
-    const logged=(L.sets&&L.sets[e.u])||null;
-    const draft=(draftSets[k]&&draftSets[k][e.u])||null;
-    const rows=draft||logged||Array.from({length:pr.setCount},()=>({w:pr.weight,r:null}));
-    const fb=(L.fb&&L.fb[e.u])||null;
-    html+=`<div class="exc" data-exu="${e.u}">
-      <div class="exh"><b>${esc(x.n)}</b><span class="mg">${esc(x.m)}</span></div>
-      <div class="presc">Hedef: ${pr.weight!=null?fW(pr.weight)+" kg":"— kg"} × ${pr.reps}+ tekrar · ${pr.setCount} set · RIR ${pr.rir}</div>
-      ${pr.note?`<div class="presc dim">${pr.note}</div>`:""}
-      <div class="sethead"><span>Set</span><span>kg</span><span>tekrar</span><span></span></div>
-      ${rows.map((r,i)=>`<div class="setrow" data-u="${e.u}" data-i="${i}">
-        <span class="sn">${i+1}</span>
-        <input type="number" inputmode="decimal" step="0.25" data-f="w" value="${r.w!=null?r.w:""}" placeholder="${pr.weight!=null?fW(pr.weight):"kg"}">
-        <input type="number" inputmode="numeric" data-f="r" value="${r.r!=null?r.r:""}" placeholder="${pr.reps}">
-        <button class="del" data-delset="${i}" aria-label="Seti sil">✕</button>
-      </div>`).join("")}
-      <div class="spread" style="margin-top:10px">
-        <button class="btn-mini" data-addset="1">+ Set ekle</button>
-        <div class="seg tiny" style="margin:0;flex:1;max-width:230px">
-          <button data-fbv="e" class="${fb==="e"?"on":""}">Kolay</button>
-          <button data-fbv="t" class="${fb==="t"?"on":""}">Yerinde</button>
-          <button data-fbv="z" class="${fb==="z"?"on":""}">Zor</button>
-        </div>
-      </div>
-    </div>`;
+    const last=groups[groups.length-1];
+    if(e.grp&&last&&last.grp===e.grp)last.items.push(e);
+    else groups.push({grp:e.grp||null,items:[e]});
+  }
+  for(const g of groups){
+    if(g.items.length>1){
+      html+=`<div class="ssgrp"><div class="ssgrp-lab">🔗 Süperset — dinlenmeden ardışık yap</div>${g.items.map(e=>exCardHtml(m,p,e,L,k)).join("")}</div>`;
+    }else{
+      html+=exCardHtml(m,p,g.items[0],L,k);
+    }
   }
   html+=`<button class="btn-a" id="btnDone">${L.done?"Değişiklikleri kaydet":"Antrenmanı kaydet"}</button>
-  <p class="hint" style="text-align:center">Geri bildirim (kolay/zor) bir sonraki haftanın set sayısını ve kilosunu ayarlar.</p>`;
+  <p class="hint" style="text-align:center">Geri bildirim (kolay/yerinde/zor/ağrı) bir sonraki haftanın set sayısını ve kilosunu ayarlar.</p>`;
   area.innerHTML=html;
   $("#btnDone").addEventListener("click",saveSession);
 }
@@ -798,11 +893,14 @@ $("#sessArea").addEventListener("click",e=>{
   const add=e.target.closest("[data-addset]");
   const del=e.target.closest("[data-delset]");
   const fbb=e.target.closest("[data-fbv]");
+  const swapBtn=e.target.closest("[data-swap]");
+  const swapOk=e.target.closest("#swapOk");
+  const swapCancel=e.target.closest("#swapCancel");
   if(add){
     harvestSess();
     const u=add.closest(".exc").dataset.exu;
     draftSets[k]=draftSets[k]||{};draftSets[k][u]=draftSets[k][u]||[];
-    draftSets[k][u].push({w:null,r:null});
+    draftSets[k][u].push({w:null,r:null,rir:null});
     renderSession();
   }
   if(del){
@@ -818,6 +916,21 @@ $("#sessArea").addEventListener("click",e=>{
     m.log[k].fb=m.log[k].fb||{};
     m.log[k].fb[u]=fbb.dataset.fbv;
     save();renderSession();
+  }
+  if(swapBtn){
+    harvestSess();
+    const u=swapBtn.closest(".exc").dataset.exu;
+    swapOpenU=(swapOpenU===u)?null:u;
+    renderSession();
+  }
+  if(swapCancel){swapOpenU=null;harvestSess();renderSession();}
+  if(swapOk){
+    const newEx=$("#swapSel").value,day=m.days[p.d],ent=day.ex.find(x=>x.u===swapOpenU);
+    if(ent&&newEx){
+      ent.ex=newEx;ent.u=uid();ent.w0=null;
+      swapOpenU=null;save();render();
+      toast("Hareket değiştirildi — yeni hareket bir sonraki setten geçerli");
+    }
   }
 });
 function saveSession(){
@@ -941,6 +1054,7 @@ function renderBuilder(area){
         <label><span>Başlangıç kg</span><input type="number" data-bf="w0" value="${e.w0!=null?e.w0:""}" step="0.25" inputmode="decimal" placeholder="ilk seansta"></label>
         <span class="hint" style="align-self:end;padding-bottom:8px">Boş bırakırsan ilk seansta girdiğin kilo baz alınır.</span>
       </div>
+      ${ei>0?`<button class="btn-mini" data-bssuper="${di}:${ei}" style="margin-top:8px${e.grp?";color:var(--teal)":""}">${e.grp?"🔗 Süperset (bir önceki ile) — kaldır":"+ Süpersete bağla (bir önceki ile)"}</button>`:""}
     </div>`).join("")}
     <button class="btn-s" data-baddx="${di}">+ Egzersiz ekle</button>
   </div>`).join("");
@@ -998,6 +1112,14 @@ function wireBuilder(area){
     harvestB(area);
     const bx=b.closest(".bex");
     B.days[+bx.dataset.di].ex.splice(+bx.dataset.ei,1);renderBuilder(area);
+  }));
+  area.querySelectorAll("[data-bssuper]").forEach(b=>b.addEventListener("click",()=>{
+    harvestB(area);
+    const[di,ei]=b.dataset.bssuper.split(":").map(Number);
+    const day=B.days[di],cur=day.ex[ei],prev=day.ex[ei-1];
+    if(cur.grp)cur.grp=null;
+    else{cur.grp=prev.grp||uid();prev.grp=cur.grp;}
+    renderBuilder(area);
   }));
   area.querySelectorAll("[data-bex]").forEach(sel=>sel.addEventListener("change",()=>{
     if(sel.value==="__new"){
@@ -1177,7 +1299,7 @@ function renderTrainSum(){
   <span class="chip ${isDL(m,wk)?"warn":"teal"}">H${wk}/${totW(m)}${isDL(m,wk)?" · Deload":" · RIR "+RIR(m,wk)}</span></div>
   <p class="tiny mut" style="margin-top:8px">Bu hafta ${doneW}/${m.days.length} seans tamamlandı${cur?` · sıradaki: <b style="color:var(--ink)">${esc(m.days[cur.d].label)}</b>`:" · mezosiklüs bitti 🎉"}</p>
   <div style="margin-top:6px">${mgRows}</div>
-  <p class="hint">Haftalık set hacmi — kas grubu başına planlanan/işlenen.</p>`;
+  <p class="hint">Haftalık set hacmi — kas grubu başına planlanan/işlenen. Genel hipertrofi literatüründe sık kullanılan bant kas grubu başına haftada ~10–20 set (kişiye, deneyime ve toparlanmaya göre değişir) — kesin bir hedef değil, yalnızca yön verici bir referans.</p>`;
 }
 
 /* ============ AYARLAR ============ */
@@ -1252,6 +1374,56 @@ $("#btnEndMeso").addEventListener("click",()=>{
   m.active=false;m.archived=true;m.end=iso();
   openSess=null;save();render();toast("Mezosiklüs arşivlendi");
 });
+/* ============ hatırlatıcı ============ */
+const REMK="kd_remind",REMDK="kd_remind_d";
+function remindOn(){return localStorage.getItem(REMK)==="1";}
+function lastDoneDate(m){
+  let best=null;
+  for(const L of Object.values(m.log))if(L.done&&L.date&&(!best||L.date>best))best=L.date;
+  return best;
+}
+function renderRemindSettings(){
+  const on=remindOn(),supported="Notification" in window;
+  $("#btnRemind").textContent=on?"Hatırlatıcıyı kapat":"Bildirim izni iste ve hatırlatıcıyı aç";
+  $("#remindStatus").textContent=!supported?"Bu tarayıcı bildirimi desteklemiyor — yalnızca uygulama içi banner çalışır."
+    :on?("Açık · bildirim izni: "+Notification.permission):"Kapalı";
+}
+$("#btnRemind").addEventListener("click",async()=>{
+  if(remindOn()){localStorage.setItem(REMK,"0");renderRemindSettings();toast("Hatırlatıcı kapatıldı");return;}
+  if(!("Notification" in window)){localStorage.setItem(REMK,"1");renderRemindSettings();toast("Hatırlatıcı (uygulama içi banner) açıldı");checkReminder();return;}
+  try{
+    const perm=await Notification.requestPermission();
+    localStorage.setItem(REMK,"1");
+    toast(perm==="granted"?"Hatırlatıcı açıldı":"Hatırlatıcı açıldı (bildirim izni verilmedi — yalnızca banner çalışır)");
+  }catch(e){localStorage.setItem(REMK,"1");}
+  renderRemindSettings();checkReminder();
+});
+function checkReminder(){
+  const box=$("#remindBanner");if(!box)return;
+  const m=AM();
+  if(!remindOn()||!m){box.innerHTML="";return;}
+  const last=lastDoneDate(m)||m.start;
+  const gap=dd(last,iso());
+  if(gap<2){box.innerHTML="";return;}
+  const cur=curPos(m),nextLabel=cur?m.days[cur.d].label:null;
+  box.innerHTML=`<div class="banner warn">🔔 ${gap} gündür antrenman yapmadın${nextLabel?` — sırada <b>${esc(nextLabel)}</b> var`:""}.</div>`;
+  const today=iso();
+  if("Notification" in window&&Notification.permission==="granted"&&localStorage.getItem(REMDK)!==today){
+    try{new Notification("Formda",{body:gap+" gündür antrenman yapmadın"+(nextLabel?" — sırada "+nextLabel:"")+".",icon:"icon-192.png"});}catch(e){}
+    localStorage.setItem(REMDK,today);
+  }
+}
+/* ============ depolama boyutu ============ */
+function updateStorageHint(){
+  const el=$("#storageHint");if(!el)return;
+  let bytes=0;
+  try{bytes=new Blob([localStorage.getItem(KEY)||""]).size;}catch(e){bytes=JSON.stringify(S).length;}
+  const kb=bytes/1024;
+  const sizeTxt=kb>1024?(kb/1024).toFixed(2)+" MB":Math.round(kb)+" KB";
+  const warn=kb>3072;
+  el.innerHTML=`Veriler yalnızca bu cihazın tarayıcı depolamasında tutulur; hiçbir sunucuya gönderilmez. Haftada bir JSON yedeği almanı öneririm. Eski Kalori Defisit (v1) yedeklerini de içe aktarabilirsin.<br>
+  <span class="${warn?"":"mut"}" style="${warn?"color:var(--warn)":""}">Yerel veri boyutu: ${sizeTxt}${warn?" — tarayıcı sınırına yaklaşıyor, yedek alıp eski mezosiklüs/faz arşivlerini gerekirse temizlemeyi düşün.":""}</span>`;
+}
 /* veri */
 function dl(name,content,type){
   const b=new Blob([content],{type});const u=URL.createObjectURL(b);
@@ -1529,6 +1701,7 @@ function render(){
   renderSession();if(!builderOpen)renderPlan();renderTHist();
   if($("#p-grafik").classList.contains("on"))drawCharts();
   syncTimer();
+  renderRemindSettings();checkReminder();updateStorageHint();
 }
 render();
 fillForm(iso());
