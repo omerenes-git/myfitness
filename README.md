@@ -36,14 +36,20 @@ Yeni değişiklikler `main` dalına merge edildiğinde iş akışı otomatik yen
 - Tüm setlerde üst tekrar sınırına ulaştıysan → **kilo artar**, tekrar hedefi alta döner.
 - Aralıktaysan → aynı kilo, **+1 tekrar** hedefi.
 - Aralığın altındaysan → kilo korunur; "Zor" işaretlediysen hafif düşürülür.
-- "Kolay/Zor" geri bildirimi sonraki haftanın **set sayısını** ayarlar (RP tarzı otoregülasyon).
-- RIR rampası otomatik (H1: RIR 3 → son hafta: RIR 0), deload haftasında setler yarıya, kilolar ~%90'a iner.
+- "Kolay/Yerinde/Zor/Ağrı" geri bildirimi sonraki haftanın **set sayısını ve kilosunu** ayarlar (RP tarzı otoregülasyon). Ağrı işaretlersen kilo belirgin düşürülür ve tekrarlarsa hareketi değiştirmen önerilir.
+- RIR rampası otomatik (H1: RIR 3 → son hafta: RIR 0), deload haftasında setler yarıya, kilolar ~%90'a iner. Her set için isteğe bağlı **gerçek RIR** girebilirsin; son seansın ortalaması hedef RIR'ın yanında gösterilir.
+- Çalışma ağırlığı belirlendiğinde otomatik **ısınma seti önerisi** çıkar (%50 × 8, %75 × 4).
+- Bir hareketi beğenmezsen veya ağrı veriyorsa **"↺ Hareketi değiştir"** ile aynı kas grubundan başka bir egzersize geçebilirsin; geçmiş kayıtlar eski hareket altında saklı kalır.
+- Mezosiklüs kurarken iki ardışık egzersizi **süperset** olarak bağlayabilirsin — seans ekranında birlikte gruplanır.
+- Özet sekmesinde haftalık **kas grubu bazlı set hacmi** (planlanan/işlenen) görünür.
 
 **Omuz & Kol ×4 şablonu:** haftada 3-4 gün spor yapanlar için hazır 4 günlük dönüşümlü program (İtiş A · Omuz → Çekiş A · Kol → İtiş B · Omuz → Çekiş B · Kol). Her gün omuz/kol'a ağırlık veriyor (lateral raise, face pull, biceps/triceps izolasyonları), göğüs-sırt-bacak için de temel bileşik hareketleri koruyor. Seanslar takvim gününe değil sıraya bağlı: haftada 3 gün gidersen bir sonraki seansı bir dahaki antrenmanında sürdürürsün, hafta sayısı otomatik ilerler. Şablonu yükledikten sonra egzersiz/set/tekrar aralıklarını istediğin gibi düzenleyebilirsin.
 
 **Kalori:** Sabah kilonu + gün sonunda yediğin kaloriyi gir; açığı ve TDEE'yi uygulama hesaplar. Yeterli veri birikince TDEE formülden değil **kendi tartım/alım verinden ölçülür**. Bel çevresini haftada bir gir — grafikte izlenir.
 
 **Grafikler:** kilo + projeksiyon, egzersiz bazlı tahmini 1RM (Epley), bel çevresi, 28 günlük enerji dengesi.
+
+**Görünüm & hatırlatıcı:** Ayarlar'dan koyu/açık/sistem teması seçebilir, antrenman hatırlatıcısını açabilirsin (son antrenmandan 2+ gün geçtiyse uygulama içi banner + izin verirsen bildirim — yalnızca uygulamayı açtığında kontrol edilir, gerçek arka plan push için sunucu gerekir ve bu tamamen cihazda çalışan uygulamada yoktur).
 
 ## Dosyalar
 
