@@ -31,13 +31,15 @@ Yeni değişiklikler `main` dalına merge edildiğinde iş akışı otomatik yen
 
 ## Kullanım özeti
 
-**Antrenman:** İlk açılışta "Mezosiklüs kur" → hazır **Üst/Alt ×4 şablonu**nu yükle veya kendi programını gir (egzersiz, set, tekrar aralığı, kilo artışı). İlk hafta kiloları sen belirlersin; sonrasında her set için **kilo × hedef tekrar** uygulamadan gelir:
+**Antrenman:** İlk açılışta "Mezosiklüs kur" → hazır **Üst/Alt ×4** ya da **Omuz & Kol ×4** şablonunu yükle, veya kendi programını gir (egzersiz, set, tekrar aralığı, kilo artışı). İlk hafta kiloları sen belirlersin; sonrasında her set için **kilo × hedef tekrar** uygulamadan gelir:
 
 - Tüm setlerde üst tekrar sınırına ulaştıysan → **kilo artar**, tekrar hedefi alta döner.
 - Aralıktaysan → aynı kilo, **+1 tekrar** hedefi.
 - Aralığın altındaysan → kilo korunur; "Zor" işaretlediysen hafif düşürülür.
 - "Kolay/Zor" geri bildirimi sonraki haftanın **set sayısını** ayarlar (RP tarzı otoregülasyon).
 - RIR rampası otomatik (H1: RIR 3 → son hafta: RIR 0), deload haftasında setler yarıya, kilolar ~%90'a iner.
+
+**Omuz & Kol ×4 şablonu:** haftada 3-4 gün spor yapanlar için hazır 4 günlük dönüşümlü program (İtiş A · Omuz → Çekiş A · Kol → İtiş B · Omuz → Çekiş B · Kol). Her gün omuz/kol'a ağırlık veriyor (lateral raise, face pull, biceps/triceps izolasyonları), göğüs-sırt-bacak için de temel bileşik hareketleri koruyor. Seanslar takvim gününe değil sıraya bağlı: haftada 3 gün gidersen bir sonraki seansı bir dahaki antrenmanında sürdürürsün, hafta sayısı otomatik ilerler. Şablonu yükledikten sonra egzersiz/set/tekrar aralıklarını istediğin gibi düzenleyebilirsin.
 
 **Kalori:** Sabah kilonu + gün sonunda yediğin kaloriyi gir; açığı ve TDEE'yi uygulama hesaplar. Yeterli veri birikince TDEE formülden değil **kendi tartım/alım verinden ölçülür**. Bel çevresini haftada bir gir — grafikte izlenir.
 

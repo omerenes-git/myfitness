@@ -739,7 +739,7 @@ function renderSession(){
   const m=AM(),area=$("#sessArea");
   if(!m){
     area.innerHTML=`<div class="card"><h2>Antrenman</h2>
-    <p class="tiny mut" style="line-height:1.6">Aktif bir mezosiklüs yok. Hazır Üst/Alt ×4 şablonuyla veya kendi programınla bir mezosiklüs kur — sonrası otomatik: her hafta kilo ve tekrar hedeflerini uygulama verir.</p>
+    <p class="tiny mut" style="line-height:1.6">Aktif bir mezosiklüs yok. Hazır Üst/Alt ×4 veya Omuz & Kol ×4 şablonuyla ya da kendi programınla bir mezosiklüs kur — sonrası otomatik: her hafta kilo ve tekrar hedeflerini uygulama verir.</p>
     <button class="btn-a" id="goBuild">Mezosiklüs kur</button></div>`;
     $("#goBuild").addEventListener("click",()=>{builderOpen=true;B=null;renderPlan();
       document.querySelector('#segT button[data-s="plan"]').click();});
@@ -909,6 +909,15 @@ function tmplUL(){
     {label:"Alt B",ex:[E("Hack Squat",3,8,12,2.5),E("Hip Thrust",3,8,12,5),E("Leg Extension",3,12,15,2.5),E("Lying Leg Curl",3,10,15,2.5),E("Seated Calf Raise",4,12,20,2.5),E("Hanging Leg Raise",3,8,15,1.25)]}
   ];
 }
+function tmplOK(){
+  const E=(n,sets,lo,hi,inc)=>({u:uid(),ex:exByName(n).id,sets,lo,hi,inc,w0:null});
+  return [
+    {label:"İtiş A · Omuz",ex:[E("Overhead Press",3,6,10,2.5),E("Incline Dumbbell Press",3,8,12,2.5),E("Lateral Raise",4,12,20,1.25),E("Cable Lateral Raise",3,12,20,1.25),E("Triceps Pushdown",3,10,15,2.5),E("Overhead Triceps Extension",3,10,15,2.5)]},
+    {label:"Çekiş A · Kol",ex:[E("Lat Pulldown",3,8,12,2.5),E("Seated Cable Row",3,10,12,2.5),E("Face Pull",3,12,20,1.25),E("Barbell Curl",3,6,10,2.5),E("Hammer Curl",3,10,15,2.5),E("Incline Dumbbell Curl",3,10,15,1.25)]},
+    {label:"İtiş B · Omuz",ex:[E("Dumbbell Shoulder Press",3,8,12,2.5),E("Bench Press",3,6,10,2.5),E("Rear Delt Fly",3,12,20,1.25),E("Cable Lateral Raise",3,12,20,1.25),E("Close-Grip Bench Press",3,6,10,2.5),E("Skullcrusher",3,10,15,2.5)]},
+    {label:"Çekiş B · Kol",ex:[E("Pull-up",3,6,10,2.5),E("Barbell Row",3,8,12,2.5),E("Cable Curl",3,10,15,2.5),E("Dumbbell Curl",3,10,15,2.5),E("Leg Press",3,10,15,5),E("Cable Crunch",3,10,15,2.5)]}
+  ];
+}
 function renderBuilder(area){
   if(!B)B={name:"Mezosiklüs "+(S.train.mesos.length+1),weeks:5,deload:true,editing:null,
            days:[{label:"Gün 1",ex:[]}]};
@@ -944,7 +953,8 @@ function renderBuilder(area){
       <label class="f"><span>Deload haftası</span>
         <select id="bDeload"><option value="1" ${B.deload?"selected":""}>Var (+1 hafta)</option><option value="0" ${!B.deload?"selected":""}>Yok</option></select></label>
     </div>
-    ${B.editing?"":`<button class="btn-s" id="bTmpl">Üst/Alt ×4 şablonunu yükle</button>`}
+    ${B.editing?"":`<button class="btn-s" id="bTmpl">Üst/Alt ×4 şablonunu yükle</button>
+    <button class="btn-s" id="bTmplOK" style="margin-top:8px">Omuz & Kol ×4 şablonunu yükle</button>`}
     <p class="hint">RIR rampası otomatik: 1. hafta RIR 3'ten son yükleme haftasında RIR 0'a iner; deload haftasında setler yarıya, kilolar ~%90'a düşer.</p>
   </div>
   ${dayHtml}
@@ -972,6 +982,8 @@ function wireBuilder(area){
   area.querySelector("#bAddDay").addEventListener("click",()=>{harvestB(area);B.days.push({label:"Gün "+(B.days.length+1),ex:[]});renderBuilder(area);});
   const tb=area.querySelector("#bTmpl");
   if(tb)tb.addEventListener("click",()=>{harvestB(area);B.days=tmplUL();B.name=B.name||"Üst/Alt";renderBuilder(area);toast("Şablon yüklendi — istediğin gibi düzenle");});
+  const tbOK=area.querySelector("#bTmplOK");
+  if(tbOK)tbOK.addEventListener("click",()=>{harvestB(area);B.days=tmplOK();B.name=(B.name&&B.name!=="Üst/Alt")?B.name:"Omuz & Kol";renderBuilder(area);toast("Şablon yüklendi — istediğin gibi düzenle");});
   area.querySelectorAll("[data-baddx]").forEach(b=>b.addEventListener("click",()=>{
     harvestB(area);
     B.days[+b.dataset.baddx].ex.push({u:uid(),ex:S.train.exlib[0].id,sets:3,lo:8,hi:12,inc:2.5,w0:null});
